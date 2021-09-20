@@ -1,20 +1,9 @@
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import AgglomerativeClustering
-from sklearn.datasets import make_blobs
-from sklearn.cluster import KMeans
-from mpl_toolkits.mplot3d import Axes3D
 
-def test():
-    data = make_blobs(n_samples=200, n_features=2, centers=4, cluster_std=1.6,
-                      random_state=50)  # create np array for data points
-    points = data[0]  # create scatter plot
-    plt.scatter(data[0][:, 0], data[0][:, 1], c=data[1], cmap='viridis')
-    plt.xlim(-15, 15)
-    plt.ylim(-15, 15)
-    plt.show()
-#test()
+from sklearn.manifold  import MDS
+import ierarchy
+import kmeans
 
 def mod_file():
     file = open("D:\\Progs\\ISIS\\Lab1\\binary.csv", "r")
@@ -23,16 +12,21 @@ def mod_file():
         new_line = line.replace(";", ",")
         new_file.write(new_line)
 
+def mds_method(df):
+    mds = MDS(n_components=2)
+    mds.fit(df)
+    return mds
+
 def __main__(filepath="D:\\Progs\\ISIS\Lab1\\binary.dat"):
-    pure_data = pd.read_csv(filepath, sep='\t',header=None)
+    pure_data = pd.read_csv(filepath, sep='\t', header=None)
+    labels = []
     data = []
     for i in range(pure_data.size):
-        col = pure_data.values[i][0].split()[1:]
-        data.append(col)
-
+        temp = pure_data.values[i][0].split()
+        labels.append(temp[0])
+        data.append(temp[1:])
     df = np.array(data)
-
-
-
+    #ierarchy.run(df,mds_method(df))
+    kmeans.run(df,mds_method(df))
 
 __main__()
